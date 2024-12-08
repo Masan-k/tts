@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text to Speech</title>
+</head>
+<body>
+    <h1>Text to Speech Demo</h1>
+    <input type="text" id="text" placeholder="Enter text to speak" />
+    <button onclick="speakText()">Speak</button>
+
+    <script>
+        function speakText() {
+            // 入力フィールドからテキストを取得
+            const text = document.getElementById('text').value;
+
+            // SpeechSynthesis APIのインスタンスを作成
+            const utterance = new SpeechSynthesisUtterance(text);
+
+            // 言語を設定（例: 英語）
+            utterance.lang = 'en-US';
+
+            // 音声速度を設定（1.0が標準）
+            utterance.rate = 0.5;
+
+            // 音声を再生
+            speechSynthesis.speak(utterance);
+        }
+    </script>
+</body>
+</html>
+
