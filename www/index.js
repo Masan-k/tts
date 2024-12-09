@@ -6,14 +6,7 @@ const m_json = {
   getData: function () {return this.data;},
   setData: function (newData) {this.data = newData;}
 };
-function getSentence(){
-  const valueNo = document.getElementById('inputNo').value;
-  Object.keys(m_json.getData()).forEach(function(key){
-    if(this[key].code === valueNo.toString().padStart(2, '0')){
-      return this[key].word;
-    }
-  },m_json.getData());
-}
+
 
 function textareaUpdate(){
   const eCheckMemo = document.getElementById('checkMemo');
@@ -22,8 +15,8 @@ function textareaUpdate(){
   const eNote = document.getElementById('note');
   const eCheckCurrent = document.getElementById('checkCurrent');
   const valueNo = document.getElementById('inputNo').value;
-  let sentence="dummy";
   let eCurrent = document.getElementById('current');
+  let data;
 
   if(eCheckMemo.checked){eMemo.style.display = 'block';
   }else{                 eMemo.style.display = 'none';}
@@ -32,17 +25,13 @@ function textareaUpdate(){
   if(eCheckCurrent.checked){eCurrent.style.display = 'block';
   }else{                     eCurrent.style.display = 'none';}
 
-  Object.keys(m_json.getData()).forEach(function(key){
-    if(this[key].code === valueNo.toString().padStart(2, '0')){
-      sentence=this[key].word;
-    }
-  },m_json.getData());
-  if(sentence === null){
-    eStatus.textContent='ERROR:SENTENCE NOT FIND(No:' + valueNo.toString() + ')';
+  data = m_json.getData().filter(row => row.code === valueNo.toString().padStart(2, '0'));
+  if(data.length === 1){
+    eCurrent.value = data[0].word; 
+  }else{
+    eCurrent.value = 'ERROR Get current data(current data length: ' + data.length + ')';
   }
-  eCurrent.value =sentence;
 }
-
 window.onload = function(){
  const requestURL = './contents.json';
   let request = new XMLHttpRequest();
@@ -54,8 +43,8 @@ window.onload = function(){
 
   request.onload = function (){
     m_json.setData(request.response);
+    textareaUpdate();
   }
-  textareaUpdate();
 }
 
 function clickUp(){
@@ -89,14 +78,11 @@ function clickPlayNo(){
   const eSpeed = document.getElementById('inputSpeed');
   let sentence = null; 
   let rate;
+  let data;
 
-  Object.keys(m_json.getData()).forEach(function(key){
-    if(this[key].code === valueNo.toString().padStart(2, '0')){
-      sentence=this[key].word;
-    }
-  },m_json.getData());
-  if(sentence === null){
-    eStatus.textContent='ERROR:SENTENCE NOT FIND(No:' + valueNo.toString() + ')';
+  data = m_json.getData().filter(row => row.code === valueNo.toString().padStart(2, '0'));
+  if(data.length != 1){
+    eStatus.textContent='ERROR get sentence data(sentence count:' + data.length + ')';
     return;
   }
   const utterance = new SpeechSynthesisUtterance(sentence);
