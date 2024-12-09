@@ -1,65 +1,111 @@
 /*globals window, document, setInterval, event , localStorage */
 'use strict';
+
 const m_json = {
   data: "-1",
   getData: function () {return this.data;},
   setData: function (newData) {this.data = newData;}
 };
-const m_mode = {
-  data: -1,
-  getData: function () {return this.data;},
-  setData: function (newData) {this.data = newData;}
-};
+function getSentence(){
+  const valueNo = document.getElementById('inputNo').value;
+  Object.keys(m_json.getData()).forEach(function(key){
+    if(this[key].code === valueNo.toString().padStart(2, '0')){
+      return this[key].word;
+    }
+  },m_json.getData());
+}
+
+function textareaUpdate(){
+  const eCheckMemo = document.getElementById('checkMemo');
+  const eMemo = document.getElementById('memo');
+  const eCheckNote = document.getElementById('checkNote');
+  const eNote = document.getElementById('note');
+  const eCheckCurrent = document.getElementById('checkCurrent');
+  const valueNo = document.getElementById('inputNo').value;
+  let sentence="dummy";
+  let eCurrent = document.getElementById('current');
+
+  if(eCheckMemo.checked){eMemo.style.display = 'block';
+  }else{                 eMemo.style.display = 'none';}
+  if(eCheckNote.checked){eNote.style.display = 'block';
+  }else{                 eNote.style.display = 'none';}
+  if(eCheckCurrent.checked){eCurrent.style.display = 'block';
+  }else{                     eCurrent.style.display = 'none';}
+
+  Object.keys(m_json.getData()).forEach(function(key){
+    if(this[key].code === valueNo.toString().padStart(2, '0')){
+      sentence=this[key].word;
+    }
+  },m_json.getData());
+  if(sentence === null){
+    eStatus.textContent='ERROR:SENTENCE NOT FIND(No:' + valueNo.toString() + ')';
+  }
+  eCurrent.value =sentence;
+}
 
 window.onload = function(){
-  const requestURL = './contents.json';
+ const requestURL = './contents.json';
   let request = new XMLHttpRequest();
-
-  function init(){
-    let param = location.search.split('&')
-    if(param.length === 2){
-      m_mode.setData(param[0].split('=')[1]);
-      m_targetCode.setData(param[1].split('=')[1]);
-    }else{
-      //alert('The parameters at the time of calling are not set.\n(url:' + location.href + ')\n\nPlease start from the menu screen.');
-      return;
-    }
-/*
-    prgTime.max = 120;
-    prgTime.value = 120;
-    lblQuestion.innerText = 'file loading..';
-
-    lblScore.innerText = 'SCORE:';
-    lblTime.innerText = 'TIME:';
-    lblCount.innerText = 'COUNT:';
-*/
-  }
-
-  init();
-
-  //btnMenu.addEventListener("click", clickMenu, false);
-  //btnRetry.addEventListener("click", clickRetry, false);
-
+  const eStatus = document.getElementById('lblStatus');
+  eStatus.textContent = 'STATUS : sentents file loading..';
   request.open('GET', requestURL);
   request.responseType = 'json';
   request.send();
 
   request.onload = function (){
     m_json.setData(request.response);
-    main();
-    return;
   }
-}
-function speakText() {
-    const text = document.getElementById('text').value;
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'en-US';
-    utterance.rate = 1.0;
-    speechSynthesis.speak(utterance);
+  textareaUpdate();
 }
 
-function main(){
-  console.log('call main');
-  console.log(m_json.getData());
+function clickUp(){
+  let eNo = document.getElementById('inputNo');
+  if (!isNaN(eNo.value)) {
+    eNo.value++; 
+  }
+}
+function clickDown(){
+  let eNo = document.getElementById('inputNo');
+  if (!isNaN(eNo.value)) {
+    eNo.value--; 
+  }
+}
+function clickSpeedUp(){
+  let eSpeed = document.getElementById('inputSpeed');
+  if (!isNaN(eSpeed.value)) {
+    eSpeed.value = (Number(eSpeed.value) + 0.1).toFixed(1); 
+  }
+}
+function clickSpeedDown(){
+  let eSpeed = document.getElementById('inputSpeed');
+  if (!isNaN(eSpeed.value)) {
+    eSpeed.value = (Number(eSpeed.value) - 0.1).toFixed(1); 
+  }
+}
+
+function clickPlayNo(){
+  const valueNo = document.getElementById('inputNo').value;
+  const eStatus = document.getElementById('lblStatus');
+  const eSpeed = document.getElementById('inputSpeed');
+  let sentence = null; 
+  let rate;
+
+  Object.keys(m_json.getData()).forEach(function(key){
+    if(this[key].code === valueNo.toString().padStart(2, '0')){
+      sentence=this[key].word;
+    }
+  },m_json.getData());
+  if(sentence === null){
+    eStatus.textContent='ERROR:SENTENCE NOT FIND(No:' + valueNo.toString() + ')';
+    return;
+  }
+  const utterance = new SpeechSynthesisUtterance(sentence);
+  utterance.lang = 'en-US';
+  rate = 1.0;
+  if (!isNaN(eSpeed.value)) {
+    rate = eSpeed.value; 
+  }
+  utterance.rate = rate; 
+  speechSynthesis.speak(utterance);
 }
 

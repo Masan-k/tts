@@ -1,15 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>tts</title>
-    <script type="text/javascript" src="index.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>tts</title>
+  <script type="text/javascript" src="index.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+      margin: 0;
+      padding: 0;
+    }
+    #main-conf{
+      margin-top:5px;
+      margin-bottom:5px;
+    }
+    #main-container{
+      margin-bottom:3px;
+    }
+    #sub-conf{
+      margin-bottom:10px;
+      width:90%;
+    }
+    .primary-textarea{
+      width:90%;
+    }
+
+  </style>
 </head>
 <body>
-    <h1>tts</h1>
-    <input type="text" id="text" placeholder="Enter text to speak" />
-    <button onclick="speakText()">Speak</button>
+  <input type="text" id="inputNo" style="width:30px" placeholder="NO" value=1 />
+  <button  accesskey="j" onclick="clickUp()">+ (j)</button>
+  <button  accesskey="k" onclick="clickDown()">- (k)</button>
+  <label><button accesskey="p" onclick="clickPlayNo()">PLAY</button></label>
+  <div id='main-conf'>
+    <label><input type="checkbox" id="checkMemo" accesskey="m" onclick="textareaUpdate()"> memo</label>
+    <label><input type="checkbox" id="checkNote" accesskey="n" onclick="textareaUpdate()"> note</label>
+    <label><input type="checkbox" id="checkCurrent" accesskey="p" onclick="textareaUpdate()"> current</label>
+  </div>
+  <div id='message-container'>
+    <textarea id="answer" class="primary-textarea" rows="3" placeholder="Enter answer"></textarea><br>
+    <textarea id="current" class="primary-textarea" rows="3"  placeholder="Current sentence"></textarea>
+    <br>
+    <textarea id="memo" class="primary-textarea" rows="5" placeholder="Enter memo"></textarea><br>
+    <textarea id="note" class="primary-textarea" rows="5" placeholder="Enter note"></textarea><br>
+  </div>
+  <div id='sub-conf'>
+    <fieldset>
+      <legend>configration</legend>
+      <label><input type="checkbox" id="checkRepeat" value="on" accesskey="r"> REPEAT</label>
+      <input type="text" id="inputSpeed" style="width:30px" placeholder="Speed" value=1.0 />
+      <button  accesskey="u" onclick="clickSpeedUp()">+ (u)</button>
+      <button  accesskey="i" onclick="clickSpeedDown()">- (i)</button>
+    </fieldset>
+  </div>
+  <a id="lblStatus">dummyStatus</a>
 </body>
 </html>
 
