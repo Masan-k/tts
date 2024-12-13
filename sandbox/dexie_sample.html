@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dexie/3.2.3/dexie.min.js"></script>
+
+    <title>SandBox-DEXIE</title>
+</head>
+<body>
+    <h1>SandBox-DEXIE</h1>
+    <input type="text" id="inputCode" placeholder="Enter code" /><br>
+    <input type="text" id="inputName" placeholder="Enter text" /><br>
+    <input type="text" id="inputAge" placeholder="Enter age" /><br>
+    <button onclick="clickInsert()">insert</button><br>
+    <button onclick="clickDummyInsert()">dummyInsert</button><br>
+
+    <script>
+      /*globals window, document, setInterval, event , localStorage */
+      const db = new Dexie("tts-sandbox");
+
+      db.version(1)
+      .stores({
+        friends: "code,name,age"
+      });
+
+      function clickInsert(){
+       db.friends
+          .put({
+            code: inputCode.value, name: inputName.value, age: inputAge.value
+          })
+          .catch((error)=>{
+            console.error(error);
+          });
+ }
+ 
+     //import Dexie from 'dexie';
+      function clickDummyInsert(){
+       db.friends
+          .put({
+            code: "01", name: "砂糖", age:20
+          })
+          .catch((error)=>{
+            console.error(error);
+          });
+      }
+    </script>
+</body>
+</html>
+
