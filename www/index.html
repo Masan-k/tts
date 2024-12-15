@@ -73,13 +73,16 @@
       <textarea id="current" class="primary-textarea" rows="3"  placeholder="Current sentence"></textarea><br>
 
       <fieldset>
-        <label><input type="checkbox" id="checkAnswer" accesskey="a" onclick="textareaUpdate()"> answer</label>
-        <textarea id="answer" class="primary-textarea" rows="3" placeholder="Enter answer"></textarea><br>
         <label><input type="checkbox" id="checkMemo" accesskey="m" onclick="textareaUpdate()"> memo</label>
+        <button accesskey="s" onclick="clickUpdateMemo()"> update (memo,note) </button>
         <textarea id="memo" class="primary-textarea" rows="5" placeholder="Enter memo"></textarea><br>
         <label><input type="checkbox" id="checkNote" accesskey="n" onclick="textareaUpdate()"> note</label>
-        <textarea id="note" class="primary-textarea" rows="5" placeholder="Enter note"></textarea><br>
-        <button accesskey="s" onclick="clickUpdateTextarea()"> text:update </button><br>
+        <textarea id="note" class="primary-textarea" rows="5" placeholder="Enter note"></textarea>
+      </fieldset>
+      <fieldset>
+        <label><input type="checkbox" id="checkAnswer" accesskey="a" onclick="textareaUpdate()"> answer</label>
+        <button accesskey="s" onclick="clickUpdateAnswer()"> update </button>
+        <textarea id="answer" class="primary-textarea" rows="3" placeholder="Enter answer"></textarea>
       </fieldset>
 
     <div id='sub-conf'>
