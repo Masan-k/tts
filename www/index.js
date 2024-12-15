@@ -48,7 +48,7 @@ function clickUpdateAnswer(){
       console.error(error);
       eStatus.textContent = 'STATUS : ERROR! EntryMemo Update => '+ error;
     });
- }
+}
 
 
 function clickUpdateCheck(){
@@ -71,9 +71,7 @@ function clickUpdateCheck(){
       console.error(error);
       eStatus.textContent = 'STATUS : ERROR! EntryCheck Update => '+ error;
     });
-  
 }
-
 
 function textareaUpdate(){
   const eCheckAnswer = document.getElementById('checkAnswer');
@@ -86,15 +84,13 @@ function textareaUpdate(){
   let eCurrent = document.getElementById('current');
   let currentData;
   const valueNo = document.getElementById('inputNo').value;
-
-
+  
   if(eCheckAnswer.checked){eAnswer.style.display = 'block';
   }else{                   eAnswer.style.display = 'none';}
   if(eCheckMemo.checked){eMemo.style.display = 'block';
   }else{                 eMemo.style.display = 'none';}
   if(eCheckNote.checked){eNote.style.display = 'block';
   }else{                 eNote.style.display = 'none';}
-
   if(eCheckCurrent.checked){
     eCurrent.style.display = 'block';
     currentData = getCurrentData();
@@ -106,12 +102,10 @@ function textareaUpdate(){
   }else{
     eCurrent.style.display = 'none';
   }
-
   m_db.entryMemo.get(valueNo).then(row => {
     if(row){
       eMemo.value = row.memo;
       eNote.value = row.note;
-
     }else{
       eMemo.value = '';
       eNote.value = '';
@@ -119,7 +113,6 @@ function textareaUpdate(){
     }
   });
 }
-
 
 function checkUpdate(){
   const eCheckContainer = document.getElementById('check-container');
@@ -149,7 +142,6 @@ function checkUpdate(){
   });
 }
 
-
 window.onload = function(){
   const requestURL = './contents.json';
   let request = new XMLHttpRequest();
@@ -172,6 +164,7 @@ function clickPlayNo(){
   const LANG='en-US'
   const eStatus = document.getElementById('lblStatus');
   const eSpeed = document.getElementById('inputSpeed');
+  const eRepeat = document.getElementById('inputRepeat');
   let currentRow = getCurrentData();
   let utterance
   let rate;
@@ -187,7 +180,11 @@ function clickPlayNo(){
     rate = eSpeed.value; 
   }
   utterance.rate = rate; 
-  speechSynthesis.speak(utterance);
+  if(!isNaN(eRepeat.value)){
+    for(let i=0; i<eRepeat.value; i++){
+      speechSynthesis.speak(utterance);
+    }
+  }
 }
 
 function clickNext(){
@@ -217,5 +214,17 @@ function clickSpeedDown(){
   let eSpeed = document.getElementById('inputSpeed');
   if (!isNaN(eSpeed.value)) {
     eSpeed.value = (Number(eSpeed.value) - 0.1).toFixed(1); 
+  }
+}
+function clickRepeatUp(){
+  let el = document.getElementById('inputRepeat');
+  if (!isNaN(el.value)) {
+    el.value = Number(el.value) + 1; 
+  }
+}
+function clickRepeatDown(){
+  let el = document.getElementById('inputRepeat');
+  if (!isNaN(el.value)) {
+    el.value = Number(el.value) - 1; 
   }
 }

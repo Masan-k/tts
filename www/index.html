@@ -35,10 +35,7 @@
       margin-bottom:3px;
       align-items: center;     /* 縦方向中央揃え */
     }
-    #sub-conf{
-      margin-bottom:10px;
-      width:90%;
-    }
+   
     #lblStatus{
       width:90%;
     }
@@ -48,33 +45,42 @@
     #check-container{
       display:inline-block;
     } 
+    .button-updown{
+      width:2rem;
+    }
+
+      
   </style>
 </head>
 <body>
   <div id='container'>
     <div id='main-navi'>
-      <button accesskey="p" onclick="clickPlayNo()"> play </button>
-      <button accesskey="n" onclick="clickNext()"> next </button>
-      <input type="text" id="inputNo" style="width:30px" placeholder="NO" value=1 />
-      <button  accesskey="j" onclick="clickUp()">+ (j)</button>
-      <button  accesskey="k" onclick="clickDown()">- (k)</button>
+      <fieldset>
+        <legend>main</legend>
+        <button accesskey="p" onclick="clickPlayNo()"> play </button>
+        <button accesskey="n" onclick="clickNext()"> next </button>
+        <input type="text" id="inputNo" style="width:30px" placeholder="NO" value=1 />
+        <button  class='button-updown' accesskey="j" onclick="clickUp()">+</button>
+        <button  class='button-updown' accesskey="k" onclick="clickDown()">-</button>
+      </fieldset>
     </div>
 
     <div id='message-container'>
+      <fieldset>
       <label><input type="checkbox" id="checkSwitch" accesskey="a"  checked="checked" onclick="checkUpdate()"> check</label>
       <div id=check-container>
         <input name='checkValues' id="checkSelectMm" type="radio" value='none'><label for="checkSelectMm">-</label>
         <input name='checkValues' id="checkSelectOk" type="radio" value='ok'><label for="checkSelectOk">o</label>
         <input name='checkValues' id="checkSelectNg" type="radio" value='ng'><label for="checkSelectNg">x</label>
-        <button accesskey="c" onclick="clickUpdateCheck()"> check:update </button><br>
+        <button accesskey="c" onclick="clickUpdateCheck()"> update </button><br>
       </div>
-      <br>
+      </fieldset>
       <label><input type="checkbox" id="checkCurrent" accesskey="c" onclick="textareaUpdate()"> current</label>
       <textarea id="current" class="primary-textarea" rows="3"  placeholder="Current sentence"></textarea><br>
 
       <fieldset>
         <label><input type="checkbox" id="checkMemo" accesskey="m" onclick="textareaUpdate()"> memo</label>
-        <button accesskey="s" onclick="clickUpdateMemo()"> update (memo,note) </button>
+        <button accesskey="s" onclick="clickUpdateMemo()"> update </button>
         <textarea id="memo" class="primary-textarea" rows="5" placeholder="Enter memo"></textarea><br>
         <label><input type="checkbox" id="checkNote" accesskey="n" onclick="textareaUpdate()"> note</label>
         <textarea id="note" class="primary-textarea" rows="5" placeholder="Enter note"></textarea>
@@ -85,15 +91,20 @@
         <textarea id="answer" class="primary-textarea" rows="3" placeholder="Enter answer"></textarea>
       </fieldset>
 
-    <div id='sub-conf'>
-      <fieldset>
-        <legend>configration</legend>
-        <label><input type="checkbox" id="checkRepeat" value="on" accesskey="r"> repeat</label>
-        <input type="text" id="inputSpeed" style="width:30px" placeholder="Speed" value=1.0 />
-        <button accesskey="u" onclick="clickSpeedUp()">+ (u)</button>
-        <button accesskey="i" onclick="clickSpeedDown()">- (i)</button>
+      <fieldset style='display:inline-block;'>
+        <legend>speed</legend>
+        <input type="text" id="inputSpeed" style="width:30px" value=1.0 />
+        <button class='button-updown' onclick="clickSpeedUp()">+</button>
+        <button class='button-updown' onclick="clickSpeedDown()">-</button>
       </fieldset>
-    </div>
+      <fieldset style='display:inline-block;'>
+        <legend style='display:inline-block;'>repeat</legend>
+        <input type="text" id="inputRepeat" style="text-align:right;width:30px;" value=1 />
+        <button class='button-updown' onclick="clickRepeatUp()">+</button>
+        <button class='button-updown' onclick="clickRepeatDown()">-</button>
+       </fieldset>
+
+   </div>
     <a id="lblStatus">dummyStatus</a>
   </div>
 </body>
