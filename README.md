@@ -1,3 +1,4 @@
 # tts
-[website:github-pages](https://masan-k.github.io/tts/www/)
+## USEGE
+[https://masan-k.github.io/tts/www/](https://masan-k.github.io/tts/www/)
 
