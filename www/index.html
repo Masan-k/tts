@@ -3,7 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>tts</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dexie/3.2.3/dexie.min.js"></script>
   <script type="text/javascript" src="index.js"></script>
   <style>
     body{
@@ -43,6 +45,9 @@
     .primary-textarea{
       width:100%;
     }
+    #check-container{
+      display:inline-block;
+    } 
   </style>
 </head>
 <body>
@@ -50,24 +55,25 @@
     <div id='main-navi'>
       <button accesskey="p" onclick="clickPlayNo()"> play </button>
       <button accesskey="n" onclick="clickNext()"> next </button>
-       <input type="text" id="inputNo" style="width:30px" placeholder="NO" value=1 />
+      <input type="text" id="inputNo" style="width:30px" placeholder="NO" value=1 />
       <button  accesskey="j" onclick="clickUp()">+ (j)</button>
       <button  accesskey="k" onclick="clickDown()">- (k)</button>
     </div>
-   <div id='message-container'>
-        <label><input type="checkbox" id="checkSwitch" accesskey="a"  checked="checked" onclick="textareaUpdate()"> check</label>
-        <input name="selectCheckValues" id="checkSelectMm" type="radio" value='mm'>
-         <label name="selectCheckValues" for="checkSelectMm">-</label>
-        <input name="selectCheckValues" id="checkSelectOk" type="radio" value='ok'>
-         <label name="selectCheckValues" for="checkSelectOk">o</label>
-        <input name="selectCheckValues" id="checkSelectNg" type="radio" value='ng'>
-         <label name="selectCheckValues" for="checkSelectNg">x</label>
-        <button name="selectCheckValues" "selectCheckValues" accesskey="c" onclick="clickUpdateCheck()"> check:update </button><br>
 
-        <label><input type="checkbox" id="checkCurrent" accesskey="c" onclick="textareaUpdate()"> current</label>
-        <textarea id="current" class="primary-textarea" rows="3"  placeholder="Current sentence"></textarea><br>
+    <div id='message-container'>
+      <label><input type="checkbox" id="checkSwitch" accesskey="a"  checked="checked" onclick="checkUpdate()"> check</label>
+      <div id=check-container>
+        <input name='checkValues' id="checkSelectMm" type="radio" value='none'><label for="checkSelectMm">-</label>
+        <input name='checkValues' id="checkSelectOk" type="radio" value='ok'><label for="checkSelectOk">o</label>
+        <input name='checkValues' id="checkSelectNg" type="radio" value='ng'><label for="checkSelectNg">x</label>
+        <button accesskey="c" onclick="clickUpdateCheck()"> check:update </button><br>
+      </div>
+      <br>
+      <label><input type="checkbox" id="checkCurrent" accesskey="c" onclick="textareaUpdate()"> current</label>
+      <textarea id="current" class="primary-textarea" rows="3"  placeholder="Current sentence"></textarea><br>
+
       <fieldset>
-         <label><input type="checkbox" id="checkAnswer" accesskey="a" onclick="textareaUpdate()"> answer</label>
+        <label><input type="checkbox" id="checkAnswer" accesskey="a" onclick="textareaUpdate()"> answer</label>
         <textarea id="answer" class="primary-textarea" rows="3" placeholder="Enter answer"></textarea><br>
         <label><input type="checkbox" id="checkMemo" accesskey="m" onclick="textareaUpdate()"> memo</label>
         <textarea id="memo" class="primary-textarea" rows="5" placeholder="Enter memo"></textarea><br>
@@ -75,6 +81,7 @@
         <textarea id="note" class="primary-textarea" rows="5" placeholder="Enter note"></textarea><br>
         <button accesskey="s" onclick="clickUpdateTextarea()"> text:update </button><br>
       </fieldset>
+
     <div id='sub-conf'>
       <fieldset>
         <legend>configration</legend>

@@ -1,32 +1,43 @@
-/*globals window, document, setInterval, event , localStorage */
+/*globals window, document, setInterval, event */
 'use strict';
 
 const APP_CODE = 'tss';
+const m_db = new Dexie("tts");
+m_db.version(1).stores({entryCheck: "code,check"});
 
 const m_json = {
   data: "-1",
   getData: function () {return this.data;},
   setData: function (newData) {this.data = newData;}
 };
-function clickNext(){
-  console.log('call click Next');
-  clickUp();
-  clickPlayNo(); 
-}
-
-function clickUpdateCheck(){
-  console.log('call click update check');
-  //localStorage.setItem('aaa,bbbb');
-}
-
 function getCurrentData(){
   const valueNo = document.getElementById('inputNo').value;
   return m_json.getData().filter(row => row.code === valueNo.toString().padStart(2, '0'));
 }
-function textareaUpdate(){
-  const eSelectCheckValues = document.getElementsByName('selectCheckValues');
-  const eCheckSwitch = document.getElementById('checkSwitch');
+function clickUpdateCheck(){
+  const valueNo = document.getElementById('inputNo').value;
+  const radios =  document.getElementsByName('checkValues')
+  const eStatus = document.getElementById('lblStatus');
 
+  let selectedValue = null;
+  radios.forEach(radio => {
+    if (radio.checked) {
+      selectedValue = radio.value;
+    }
+  });
+
+  m_db.entryCheck
+    .put({code: valueNo, check: selectedValue}).then(no => {
+      eStatus.textContent = `STATUS : Put successful! Record NO: ${no}`
+    })
+    .catch((error)=>{
+      console.error(error);
+      eStatus.textContent = 'STATUS : ERROR! EntryCheck Update => '+ error;
+    });
+  
+}
+
+function textareaUpdate(){
   const eCheckAnswer = document.getElementById('checkAnswer');
   const eAnswer = document.getElementById('answer');
   const eCheckMemo = document.getElementById('checkMemo');
@@ -55,15 +66,38 @@ function textareaUpdate(){
   }else{
     eCurrent.style.display = 'none';
   }
+}
 
-  eSelectCheckValues.forEach(eValue => {
-    if(!eCheckSwitch.checked){
-      eValue.style.display = 'none';
-    }else{
-      eValue.style.display = 'inline-block';
-    }
+function checkUpdate(){
+  const eCheckContainer = document.getElementById('check-container');
+  const eCheckSwitch = document.getElementById('checkSwitch');
+  const valueNo = document.getElementById('inputNo').value;
+  const eCheckValues = document.getElementsByName('checkValues');
+  if(!eCheckSwitch.checked){
+    eCheckContainer.style.display = 'none'
+  }else{
+    eCheckContainer.style.display = 'inline-block';
+  }
+
+  m_db.entryCheck.get(valueNo).then(row => {
+  if (row) {
+    eCheckValues.forEach(radio => {
+      if(radio.value === row.check){
+        radio.checked = true;
+      }
+    });
+
+  }else{
+    eCheckValues.forEach(radio => {
+      if(radio.value === 'none'){
+        radio.checked = true;
+      }
+    
+  }
   });
 }
+
+
 window.onload = function(){
   const requestURL = './contents.json';
   let request = new XMLHttpRequest();
@@ -77,32 +111,8 @@ window.onload = function(){
   request.onload = function (){
     m_json.setData(request.response);
     textareaUpdate();
+    checkUpdate();
     eStatus.textContent = 'status : Running...';
-  }
-}
-
-function clickUp(){
-  let eNo = document.getElementById('inputNo');
-  if (!isNaN(eNo.value)) {
-    eNo.value++; 
-  }
-}
-function clickDown(){
-  let eNo = document.getElementById('inputNo');
-  if (!isNaN(eNo.value)) {
-    eNo.value--; 
-  }
-}
-function clickSpeedUp(){
-  let eSpeed = document.getElementById('inputSpeed');
-  if (!isNaN(eSpeed.value)) {
-    eSpeed.value = (Number(eSpeed.value) + 0.1).toFixed(1); 
-  }
-}
-function clickSpeedDown(){
-  let eSpeed = document.getElementById('inputSpeed');
-  if (!isNaN(eSpeed.value)) {
-    eSpeed.value = (Number(eSpeed.value) - 0.1).toFixed(1); 
   }
 }
 
@@ -126,4 +136,33 @@ function clickPlayNo(){
   }
   utterance.rate = rate; 
   speechSynthesis.speak(utterance);
+}
+function clickNext(){
+  console.log('call click Next');
+  clickUp();
+  clickPlayNo(); 
+}
+function clickUp(){
+  let eNo = document.getElementById('inputNo');
+  if (!isNaN(eNo.value)) {
+    eNo.value++; 
+  }
+}
+function clickDown(){
+  let eNo = document.getElementById('inputNo');
+  if (!isNaN(eNo.value)) {
+    eNo.value--; 
+  }
+}
+function clickSpeedUp(){
+  let eSpeed = document.getElementById('inputSpeed');
+  if (!isNaN(eSpeed.value)) {
+    eSpeed.value = (Number(eSpeed.value) + 0.1).toFixed(1); 
+  }
+}
+function clickSpeedDown(){
+  let eSpeed = document.getElementById('inputSpeed');
+  if (!isNaN(eSpeed.value)) {
+    eSpeed.value = (Number(eSpeed.value) - 0.1).toFixed(1); 
+  }
 }

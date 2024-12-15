@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RADIO CONTROL TEST</title>
+</head>
+<body>
+    <h1>RADIO CONTROL TEST</h1>
+    <input name='numbers' type='radio' value="one">1</input>
+    <input name='numbers' type='radio' value="two">2</input>
+    <input name='numbers' type='radio' value="three">3</input>
+    <input type='button' onclick='getSelectedValue()' value='click'></button><br>
+    <input class='dummyClass' type='radio' value="e-">a</input>
+    <input class='dummyClass' type='radio' value="bi-">b</input>
+    <input class='dummyClass' type='radio' value="si-">c</input>
+    <input type='button' onclick='getClass()' value='get class'></button>
+     <script>
+      function getSelectedValue(){
+        const radios = document.getElementsByName('numbers');
+        let selectedValue = null;
+
+          for (const radio of radios) {
+            if (radio.checked) {
+              selectedValue = radio.value;
+              break;
+            }
+          }
+        alert(selectedValue);
+      }
+      function getClass(){
+        const radios = document.getElementsByClass('dummyClass');
+        let selectedValue = null;
+
+          for (const radio of radios) {
+            if (radio.checked) {
+              selectedValue = radio.value;
+              break;
+            }
+          }
+        alert(selectedValue);
+      }
+     </script>
+</body>
+</html>
+
