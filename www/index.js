@@ -1,9 +1,9 @@
 /*globals window, document, setInterval, event */
 'use strict';
 
-const APP_CODE = 'tss';
-const m_db = new Dexie("tts");
-m_db.version(3).stores({entryCheck: "code,check",entryMemo:"code,memo,note",entryAnswer:"++id,code,answer,date"});
+const APP_CODE = 'tss-v2';
+const m_db = new Dexie(APP_CODE);
+m_db.version(3).stores({entryCheck: "code,check",entryHint:"code,hint1,hint2",entryAnswer:"++id,code,answer,date"});
 
 const m_json = {
   data: "-1",
@@ -16,19 +16,19 @@ function getCurrentData(){
   return m_json.getData().filter(row => row.code === valueNo.toString().padStart(2, '0'));
 }
 
-function clickUpdateMemo(){
+function clickUpdateHint(){
   const valueNo = document.getElementById('inputNo').value;
-  const valueMemo = document.getElementById('memo').value;
-  const valueNote = document.getElementById('note').value;
+  const valueHint1 = document.getElementById('hint1').value;
+  const valueHint2 = document.getElementById('hint2').value;
   const eStatus = document.getElementById('lblStatus');
 
-  m_db.entryMemo
-    .put({code: valueNo, memo: valueMemo, note: valueNote}).then(no => {
-      eStatus.textContent = `STATUS : Put successful(memo,note)! Record NO: ${no}`
+  m_db.entryHint
+    .put({code: valueNo, hint1: valueHint1, hint2: valueHint2}).then(no => {
+      eStatus.textContent = `STATUS : Put successful(hint1,hint2)! Record NO: ${no}`
     })
     .catch((error)=>{
       console.error(error);
-      eStatus.textContent = 'STATUS : ERROR! EntryMemo Update => '+ error;
+      eStatus.textContent = 'STATUS : ERROR! EntryHint Update => '+ error;
     });
  }
 
@@ -46,7 +46,7 @@ function clickUpdateAnswer(){
     })
     .catch((error)=>{
       console.error(error);
-      eStatus.textContent = 'STATUS : ERROR! EntryMemo Update => '+ error;
+      eStatus.textContent = 'STATUS : ERROR! EntryHint Update => '+ error;
     });
 }
 
@@ -76,39 +76,53 @@ function clickUpdateCheck(){
 function textareaUpdate(){
   const eCheckAnswer = document.getElementById('checkAnswer');
   const eAnswer = document.getElementById('answer');
-  const eCheckMemo = document.getElementById('checkMemo');
-  const eMemo = document.getElementById('memo');
-  const eCheckNote = document.getElementById('checkNote');
-  const eNote = document.getElementById('note');
-  const eCheckCurrent = document.getElementById('checkCurrent');
-  let eCurrent = document.getElementById('current');
+  const eCheckHint1 = document.getElementById('checkHint1');
+  const eHint1 = document.getElementById('hint1');
+  const eCheckHint2 = document.getElementById('checkHint2');
+  const eHint2 = document.getElementById('hint2');
+  const eCheckCurrentEn = document.getElementById('checkCurrentEn');
+  const eCheckCurrentJp = document.getElementById('checkCurrentJp');
+  let eCurrentEn = document.getElementById('currentEn');
+  let eCurrentJp = document.getElementById('currentJp');
   let currentData;
   const valueNo = document.getElementById('inputNo').value;
   
   if(eCheckAnswer.checked){eAnswer.style.display = 'block';
   }else{                   eAnswer.style.display = 'none';}
-  if(eCheckMemo.checked){eMemo.style.display = 'block';
-  }else{                 eMemo.style.display = 'none';}
-  if(eCheckNote.checked){eNote.style.display = 'block';
-  }else{                 eNote.style.display = 'none';}
-  if(eCheckCurrent.checked){
-    eCurrent.style.display = 'block';
+  if(eCheckHint1.checked){eHint1.style.display = 'block';
+  }else{                 eHint1.style.display = 'none';}
+  if(eCheckHint2.checked){eHint2.style.display = 'block';
+  }else{                 eHint2.style.display = 'none';}
+  if(eCheckCurrentEn.checked){
+    eCurrentEn.style.display = 'block';
     currentData = getCurrentData();
     if(currentData.length === 1){
-      eCurrent.value = currentData[0].en; 
+      eCurrentEn.value = currentData[0].en; 
     }else{
-      eCurrent.value = 'ERROR Get current data(current data length: ' + currentData.length + ')';
+      eCurrentEn.value = 'ERROR Get currentEn data(currentEn data length: ' + currentData.length + ')';
     }
   }else{
-    eCurrent.style.display = 'none';
+    eCurrentEn.style.display = 'none';
   }
-  m_db.entryMemo.get(valueNo).then(row => {
-    if(row){
-      eMemo.value = row.memo;
-      eNote.value = row.note;
+  if(eCheckCurrentJp.checked){
+    eCurrentJp.style.display = 'block';
+    currentData = getCurrentData();
+    if(currentData.length === 1){
+      eCurrentJp.value = currentData[0].jp; 
     }else{
-      eMemo.value = '';
-      eNote.value = '';
+      eCurrentJp.value = 'ERROR Get current data(currentJp data length: ' + currentData.length + ')';
+    }
+  }else{
+    eCurrentJp.style.display = 'none';
+  }
+
+  m_db.entryHint.get(valueNo).then(row => {
+    if(row){
+      eHint1.value = row.hint1;
+      eHint2.value = row.hint2;
+    }else{
+      eHint1.value = '';
+      eHint2.value = '';
       console.log('no data');
     }
   });
