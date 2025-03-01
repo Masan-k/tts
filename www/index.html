@@ -56,28 +56,29 @@
   <div id='container'>
     <div id='main-navi'>
       <fieldset>
-        <legend>main</legend>
-        <button accesskey="p" onclick="clickPlayNo()"> play </button>
-        <button accesskey="n" onclick="clickNext()"> next </button>
-        <input type="text" id="inputNo" style="width:30px" placeholder="NO" value=1 />
-        <button  class='button-updown' accesskey="j" onclick="clickUp()">+</button>
-        <button  class='button-updown' accesskey="k" onclick="clickDown()">-</button>
+        <button accesskey="p" onclick="clickPlay()"> play </button>
+        <label><input id="inputLoop" type="checkbox" id="checkLoop"> loop</label>
+
+        <fieldset style='display:inline-block;'>
+          <legend>no</legend>
+          <button  class='button-updown' accesskey="k" onclick="clickDown()">▼</button>
+          <input type="text" id="inputNo" style="width:30px" placeholder="NO" value=1 />
+          <button  class='button-updown' accesskey="j" onclick="clickUp()">▲</button>
+        </fieldset>
+        <fieldset style='display:inline-block;'>
+
+          <legend>speed</legend>
+          <button class='button-updown' onclick="clickSpeedDown()">▼</button>
+          <input type="text" id="inputSpeed" style="width:30px" value=1.0 />
+          <button class='button-updown' onclick="clickSpeedUp()">▲</button>
+        </fieldset>
       </fieldset>
     </div>
 
     <div id='message-container'>
-      <fieldset>
-        <label><input type="checkbox" id="checkSwitch" accesskey="a"  checked="checked" onclick="checkUpdate()"> check</label>
-        <div id=check-container>
-          <input name='checkValues' id="checkSelectMm" type="radio" value='none'><label for="checkSelectMm">-</label>
-          <input name='checkValues' id="checkSelectOk" type="radio" value='ok'><label for="checkSelectOk">o</label>
-          <input name='checkValues' id="checkSelectNg" type="radio" value='ng'><label for="checkSelectNg">x</label>
-          <button accesskey="c" onclick="clickUpdateCheck()"> update </button><br>
-        </div>
-      </fieldset>
-      <label><input type="checkbox" id="checkCurrentEn" accesskey="c" onclick="textareaUpdate()"> current-en</label>
+     <label><input type="checkbox" id="checkCurrentEn" accesskey="c" checked="checked" onclick="textareaUpdate() "> current-en</label>
       <textarea id="currentEn" class="primary-textarea" rows="3"></textarea>
-      <label><input type="checkbox" id="checkCurrentJp" accesskey="c" onclick="textareaUpdate()"> current-jp</label>
+      <label><input type="checkbox" id="checkCurrentJp" accesskey="c" checked="checked" onclick="textareaUpdate()"> current-jp</label>
       <textarea id="currentJp" class="primary-textarea" rows="3"></textarea>
 
       <fieldset>
@@ -94,19 +95,16 @@
         <textarea id="answer" class="primary-textarea" rows="3" placeholder="Enter answer"></textarea>
       </fieldset>
 
-      <fieldset style='display:inline-block;'>
-        <legend>speed</legend>
-        <input type="text" id="inputSpeed" style="width:30px" value=1.0 />
-        <button class='button-updown' onclick="clickSpeedUp()">+</button>
-        <button class='button-updown' onclick="clickSpeedDown()">-</button>
+      <fieldset>
+        <label><input type="checkbox" id="checkSwitch" accesskey="a" onclick="checkUpdate()"> check</label>
+        <div id=check-container>
+          <input name='checkValues' id="checkSelectMm" type="radio" value='none'><label for="checkSelectMm">-</label>
+          <input name='checkValues' id="checkSelectOk" type="radio" value='ok'><label for="checkSelectOk">o</label>
+          <input name='checkValues' id="checkSelectNg" type="radio" value='ng'><label for="checkSelectNg">x</label>
+          <button accesskey="c" onclick="clickUpdateCheck()"> update </button><br>
+        </div>
       </fieldset>
-      <fieldset style='display:inline-block;'>
-        <legend style='display:inline-block;'>repeat</legend>
-        <input type="text" id="inputRepeat" style="text-align:right;width:30px;" value=1 />
-        <button class='button-updown' onclick="clickRepeatUp()">+</button>
-        <button class='button-updown' onclick="clickRepeatDown()">-</button>
-       </fieldset>
-
+ 
    </div>
     <a id="lblStatus">dummyStatus</a>
   </div>

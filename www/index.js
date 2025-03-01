@@ -13,7 +13,7 @@ const m_json = {
 
 function getCurrentData(){
   const valueNo = document.getElementById('inputNo').value;
-  return m_json.getData().filter(row => row.code === valueNo.toString().padStart(2, '0'));
+  return m_json.getData().filter(row => row.code === valueNo.toString().padStart(2, '0'))[0];
 }
 
 function clickUpdateHint(){
@@ -82,10 +82,10 @@ function textareaUpdate(){
   const eHint2 = document.getElementById('hint2');
   const eCheckCurrentEn = document.getElementById('checkCurrentEn');
   const eCheckCurrentJp = document.getElementById('checkCurrentJp');
-  let eCurrentEn = document.getElementById('currentEn');
-  let eCurrentJp = document.getElementById('currentJp');
-  let currentData;
+  const eCurrentEn = document.getElementById('currentEn');
+  const eCurrentJp = document.getElementById('currentJp');
   const valueNo = document.getElementById('inputNo').value;
+  let currentData;
   
   if(eCheckAnswer.checked){eAnswer.style.display = 'block';
   }else{                   eAnswer.style.display = 'none';}
@@ -96,10 +96,10 @@ function textareaUpdate(){
   if(eCheckCurrentEn.checked){
     eCurrentEn.style.display = 'block';
     currentData = getCurrentData();
-    if(currentData.length === 1){
-      eCurrentEn.value = currentData[0].en; 
+    if(currentData != undefined){
+      eCurrentEn.value = currentData.en; 
     }else{
-      eCurrentEn.value = 'ERROR Get currentEn data(currentEn data length: ' + currentData.length + ')';
+      eCurrentEn.value = 'ERROR Not Found current english word data.';
     }
   }else{
     eCurrentEn.style.display = 'none';
@@ -107,10 +107,10 @@ function textareaUpdate(){
   if(eCheckCurrentJp.checked){
     eCurrentJp.style.display = 'block';
     currentData = getCurrentData();
-    if(currentData.length === 1){
-      eCurrentJp.value = currentData[0].jp; 
+    if(currentData != undefined){
+      eCurrentJp.value = currentData.jp; 
     }else{
-      eCurrentJp.value = 'ERROR Get current data(currentJp data length: ' + currentData.length + ')';
+      eCurrentJp.value = 'ERROR Not Found current japanese word data. ';
     }
   }else{
     eCurrentJp.style.display = 'none';
@@ -123,7 +123,6 @@ function textareaUpdate(){
     }else{
       eHint1.value = '';
       eHint2.value = '';
-      console.log('no data');
     }
   });
 }
@@ -174,49 +173,54 @@ window.onload = function(){
   }
 }
 
-function clickPlayNo(){
-  const LANG='en-US'
+function clickPlay(){
   const eStatus = document.getElementById('lblStatus');
   const eSpeed = document.getElementById('inputSpeed');
-  const eRepeat = document.getElementById('inputRepeat');
-  let currentRow = getCurrentData();
-  let utterance
-  let rate;
+  const eInputNo = document.getElementById('inputNo');
+  const eLoop = document.getElementById('inputLoop');
+  const currentRow = getCurrentData();
+  //let loopCount = 0;
 
-  if(currentRow.length != 1){
-    eStatus.textContent='ERROR get sentence data(sentence count:' + currentRow.length + ')';
+  if(currentRow == undefined){
+    eStatus.textContent='ERROR get sentence data(Input Code:\"' + eInputNo.value + "\")";
     return;
   }
-  utterance = new SpeechSynthesisUtterance(currentRow[0].en);
-  utterance.lang = LANG;
-  rate = 1.0;
-  if (!isNaN(eSpeed.value)) {
-    rate = eSpeed.value; 
+
+  const audioPath = "voice/" + currentRow["code"] + ".wav";
+  const audio = new Audio(audioPath); // WAVファイルのパスを指定
+
+  if(!isNaN(eSpeed.value)) {
+    audio.playbackRate = eSpeed.value;
   }
-  utterance.rate = rate; 
-  if(!isNaN(eRepeat.value)){
-    for(let i=0; i<eRepeat.value; i++){
-      speechSynthesis.speak(utterance);
+
+  audio.play();
+  audio.addEventListener('ended', function() {
+    if(eLoop.checked){
+      this.currentTime = 0; // 再生位置を最初に戻す
+      this.play();
     }
-  }
+  });
 }
 
-function clickNext(){
-  console.log('call click Next');
-  clickUp();
-  clickPlayNo(); 
+function resetLoopCheck(){
+  let eLoop = document.getElementById('inputLoop');
+  eLoop.checked=false
 }
 function clickUp(){
   let eNo = document.getElementById('inputNo');
   if (!isNaN(eNo.value)) {
     eNo.value++; 
   }
+  resetLoopCheck();
+  textareaUpdate();
 }
 function clickDown(){
   let eNo = document.getElementById('inputNo');
   if (!isNaN(eNo.value)) {
     eNo.value--; 
   }
+  resetLoopCheck();
+  textareaUpdate();
 }
 function clickSpeedUp(){
   let eSpeed = document.getElementById('inputSpeed');
@@ -228,17 +232,5 @@ function clickSpeedDown(){
   let eSpeed = document.getElementById('inputSpeed');
   if (!isNaN(eSpeed.value)) {
     eSpeed.value = (Number(eSpeed.value) - 0.1).toFixed(1); 
-  }
-}
-function clickRepeatUp(){
-  let el = document.getElementById('inputRepeat');
-  if (!isNaN(el.value)) {
-    el.value = Number(el.value) + 1; 
-  }
-}
-function clickRepeatDown(){
-  let el = document.getElementById('inputRepeat');
-  if (!isNaN(el.value)) {
-    el.value = Number(el.value) - 1; 
   }
 }
