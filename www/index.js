@@ -83,9 +83,10 @@ function clickSubmit(){
   let inputValue = eAnswer.value;
   let diff = Diff.diffWords(currentValue, inputValue);
 
-  if(inputValue.trim.length == 0){
+  if(inputValue.trim().length == 0){
     return;
   }
+
   //inser database
   m_db.entryAnswer
     .put({code:valueNo, answer:inputValue, date: localStringJP}).then(()=> {
