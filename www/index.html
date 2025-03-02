@@ -35,7 +35,7 @@
       margin:5px;
       width:90%;
     }
-     #main-conf{
+    #main-conf{
       width:90%;
       margin-top:5px;
       margin-bottom:5px;
@@ -43,7 +43,7 @@
     #message-container{
       width:90%;
       margin-bottom:3px;
-      align-items: center;     /* 縦方向中央揃え */
+      align-items: center;
     }
     #lblStatus{
       width:90%;
@@ -57,8 +57,6 @@
     .button-updown{
       width:2rem;
     }
-
-      
   </style>
 </head>
 <body>
@@ -103,9 +101,9 @@
       <fieldset>
         <label><input type="checkbox" id="checkAnswer" checked="checked" onclick="textareaUpdate()"> answer</label>
         <button accesskey="s" onclick="clickSubmit()">submit(enter)</button>
-        <textarea id="answer" class="primary-textarea" rows="3" placeholder="Enter answers"></textarea>
+        <textarea id="answer" class="primary-textarea" rows="3" placeholder="Enter answers" spellcheck="false"></textarea>
         <hr>
-        <label> ■ DIFF</label>
+        <label><input type="checkbox" id="checkDiff" checked="checked" onclick="textareaUpdate()">DIFF</label>
         <div contenteditable="false">
           <span id="diffResult">difffff result </span>
         </div>

@@ -35,7 +35,6 @@ window.onload = function(){
     checkUpdate();
     eStatus.textContent = 'status : Running...';
   }
-
 }
 
 function clickDeletePostAnswer(){
@@ -74,6 +73,7 @@ function clickSubmit(){
   const eStatus = document.getElementById('lblStatus');
   const eCheckHistory = document.getElementById("checkAnswerHistory");
   const eCheckEn = document.getElementById("checkCurrentEn");
+  const eCheckDiff = document.getElementById("checkDiff");
   const eDiff = document.getElementById("diffResult");
 
   const now = new Date();
@@ -112,6 +112,7 @@ function clickSubmit(){
   eAnswer.value = "";
   eCheckHistory.checked = true;
   eCheckEn.checked = true;
+  eCheckDiff.checked = true;
   textareaUpdate();
 }
 
@@ -150,44 +151,62 @@ function textareaUpdate(){
   const eCurrentJp = document.getElementById('currentJp');
   const valueNo = document.getElementById('inputNo').value;
   const eCheckAnswerHistory = document.getElementById('checkAnswerHistory');
+  const eCheckDiff = document.getElementById('checkDiff');
+  const eDiffResult = document.getElementById('diffResult');
+
   let ePastEntry = document.getElementById('pastEntry');
   let currentData;
 
-  if(eCheckAnswer.checked){eAnswer.style.display = 'block';
-  }else{                   eAnswer.style.display = 'none';}
+  if(eCheckAnswer.checked){
+    eAnswer.style.display = 'block';
+  }else{
+    eAnswer.style.display = 'none';
+  }
+
+  if(eCheckDiff.checked){
+    eDiffResult.style.display = 'block';
+  }else{
+    eDiffResult.style.display = 'none';
+  }
+
+
   if(eCheckAnswerHistory.checked){
     ePastEntry.style.display = 'block';
   }else{
     ePastEntry.style.display = 'none';
   }
 
-  if(eCheckHint1.checked){eHint1.style.display = 'block';
-  }else{                 eHint1.style.display = 'none';}
+  if(eCheckHint1.checked){
+    eHint1.style.display = 'block';
+  }else{
+    eHint1.style.display = 'none';
+  }
 
   //if(eCheckHint2.checked){eHint2.style.display = 'block';
   //}else{                 eHint2.style.display = 'none';}
 
   if(eCheckCurrentEn.checked){
     eCurrentEn.style.display = 'block';
-    currentData = getCurrentData();
-    if(currentData != undefined){
-      eCurrentEn.innerText = currentData.en; 
-    }else{
-      eCurrentEn.innerText = 'ERROR Not Found current english word data.';
-    }
   }else{
     eCurrentEn.style.display = 'none';
   }
+  currentData = getCurrentData();
+  if(currentData != undefined){
+    eCurrentEn.innerText = currentData.en; 
+  }else{
+    eCurrentEn.innerText = 'ERROR Not Found current english word data.';
+  }
+
   if(eCheckCurrentJp.checked){
     eCurrentJp.style.display = 'block';
-    currentData = getCurrentData();
-    if(currentData != undefined){
-      eCurrentJp.innerText = currentData.jp; 
-    }else{
-      eCurrentJp.innerText = 'ERROR Not Found current japanese word data. ';
-    }
   }else{
     eCurrentJp.style.display = 'none';
+  }
+  currentData = getCurrentData();
+  if(currentData != undefined){
+    eCurrentJp.innerText = currentData.jp; 
+  }else{
+    eCurrentJp.innerText = 'ERROR Not Found current japanese word data. ';
   }
 
   m_db.entryHint.get(valueNo).then(row => {
