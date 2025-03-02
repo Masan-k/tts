@@ -5,6 +5,7 @@ const APP_CODE = 'tss-v2';
 const m_db = new Dexie(APP_CODE);
 m_db.version(3).stores({entryCheck: "code,check",entryHint:"code,hint1,hint2",entryAnswer:"++id,code,answer,date"});
 
+
 const m_json = {
   data: "-1",
   getData: function () {return this.data;},
@@ -14,6 +15,7 @@ window.onload = function(){
   const requestURL = './contents.json';
   let request = new XMLHttpRequest();
   const eStatus = document.getElementById('lblStatus');
+  const eAnswer = document.getElementById('answer');
 
   eStatus.textContent = 'STATUS : sentents file loading..';
   request.open('GET', requestURL);
@@ -22,12 +24,10 @@ window.onload = function(){
 
   document.addEventListener("keydown", function(event){
     if(event.key == "Enter"){
+      event.preventDefault();  // 改行を防ぐ
       clickSubmit();
     }
   });
-
-
-  
 
   request.onload = function (){
     m_json.setData(request.response);
@@ -35,6 +35,7 @@ window.onload = function(){
     checkUpdate();
     eStatus.textContent = 'status : Running...';
   }
+
 }
 
 function clickDeletePostAnswer(){
@@ -65,24 +66,51 @@ function clickUpdateHint(){
       console.error(error);
       eStatus.textContent = 'STATUS : ERROR! EntryHint Update => '+ error;
     });
- }
+}
 
 function clickSubmit(){
   const valueNo = document.getElementById('inputNo').value;
-  const valueAnswer = document.getElementById('answer').value;
+  const eAnswer = document.getElementById('answer');
   const eStatus = document.getElementById('lblStatus');
+  const eCheckHistory = document.getElementById("checkAnswerHistory");
+  const eCheckEn = document.getElementById("checkCurrentEn");
+  const eDiff = document.getElementById("diffResult");
 
   const now = new Date();
   const localStringJP = now.toLocaleString("ja-JP");
 
+  let currentValue = document.getElementById('currentEn').textContent;
+  let inputValue = eAnswer.value;
+  let diff = Diff.diffWords(currentValue, inputValue);
+
+  if(inputValue.trim.length == 0){
+    return;
+  }
+  //inser database
   m_db.entryAnswer
-    .put({code:valueNo, answer:valueAnswer, date: localStringJP}).then(()=> {
+    .put({code:valueNo, answer:inputValue, date: localStringJP}).then(()=> {
       eStatus.textContent = `STATUS : Put successful(answer)! Record NO: ${valueNo}`
     })
     .catch((error)=>{
       console.error(error);
       eStatus.textContent = 'STATUS : ERROR! EntryHint Update => '+ error;
     });
+
+
+  // diff
+  diff.forEach((row)=>{
+    if(row["removed"]){
+      currentValue = currentValue.replace(row["value"],"<span style='color:red;'>" + row["value"] + "</span>");
+    }
+    if(row["added"]){
+      inputValue = inputValue.replace(row["value"],"<span style='color:blue;'>" + row["value"] + "</span>");
+    }
+  });
+  eDiff.innerHTML = currentValue + "<br>" + inputValue;
+
+  eAnswer.value = "";
+  eCheckHistory.checked = true;
+  eCheckEn.checked = true;
   textareaUpdate();
 }
 
@@ -142,9 +170,9 @@ function textareaUpdate(){
     eCurrentEn.style.display = 'block';
     currentData = getCurrentData();
     if(currentData != undefined){
-      eCurrentEn.value = currentData.en; 
+      eCurrentEn.innerText = currentData.en; 
     }else{
-      eCurrentEn.value = 'ERROR Not Found current english word data.';
+      eCurrentEn.innerText = 'ERROR Not Found current english word data.';
     }
   }else{
     eCurrentEn.style.display = 'none';
@@ -153,9 +181,9 @@ function textareaUpdate(){
     eCurrentJp.style.display = 'block';
     currentData = getCurrentData();
     if(currentData != undefined){
-      eCurrentJp.value = currentData.jp; 
+      eCurrentJp.innerText = currentData.jp; 
     }else{
-      eCurrentJp.value = 'ERROR Not Found current japanese word data. ';
+      eCurrentJp.innerText = 'ERROR Not Found current japanese word data. ';
     }
   }else{
     eCurrentJp.style.display = 'none';
@@ -213,7 +241,6 @@ function checkUpdate(){
   });
 }
 
-
 function clickPlay(){
   const eStatus = document.getElementById('lblStatus');
   const eSpeed = document.getElementById('inputSpeed');
@@ -242,24 +269,29 @@ function clickPlay(){
     }
   });
 }
-function resetLoopCheck(){
-  let eLoop = document.getElementById('inputLoop');
+function resetCheck(){
+  const eLoop = document.getElementById('inputLoop');
+  const eCheckHistory = document.getElementById("checkAnswerHistory");
+  const eCheckEn = document.getElementById("checkCurrentEn");
   eLoop.checked=false
+  eCheckHistory.checked = false;
+  eCheckEn.checked = false;
 }
 function clickUp(){
   let eNo = document.getElementById('inputNo');
   if (!isNaN(eNo.value)) {
     eNo.value++; 
   }
-  resetLoopCheck();
+  resetCheck();
   textareaUpdate();
+
 }
 function clickDown(){
   let eNo = document.getElementById('inputNo');
   if (!isNaN(eNo.value)) {
     eNo.value--; 
   }
-  resetLoopCheck();
+  resetCheck();
   textareaUpdate();
 }
 function clickSpeedUp(){
