@@ -9,17 +9,52 @@ const m_json = {
   data: "-1",
   getData: function () {return this.data;},
   setData: function (newData) {this.data = newData;}
-};
+}
+window.onload = function(){
+  const requestURL = './contents.json';
+  let request = new XMLHttpRequest();
+  const eStatus = document.getElementById('lblStatus');
+
+  eStatus.textContent = 'STATUS : sentents file loading..';
+  request.open('GET', requestURL);
+  request.responseType = 'json';
+  request.send();
+
+  document.addEventListener("keydown", function(event){
+    if(event.key == "Enter"){
+      clickSubmit();
+    }
+  });
+
+
+  
+
+  request.onload = function (){
+    m_json.setData(request.response);
+    textareaUpdate();
+    checkUpdate();
+    eStatus.textContent = 'status : Running...';
+  }
+}
+
+function clickDeletePostAnswer(){
+  const elePastEntry = document.getElementById("pastEntry");
+  if(elePastEntry.selectedIndex != -1){
+    m_db.entryAnswer.delete(parseInt(elePastEntry.value))
+      .then(() => console.log("entryAnswers with ID "+ elePastEntry.value +" deleted."))
+      .catch((err) => console.error("Delete failed: ", err));
+    textareaUpdate();
+  }
+}
 
 function getCurrentData(){
   const valueNo = document.getElementById('inputNo').value;
   return m_json.getData().filter(row => row.code === valueNo.toString().padStart(2, '0'))[0];
 }
-
 function clickUpdateHint(){
   const valueNo = document.getElementById('inputNo').value;
   const valueHint1 = document.getElementById('hint1').value;
-  const valueHint2 = document.getElementById('hint2').value;
+  //const valueHint2 = document.getElementById('hint2').value;
   const eStatus = document.getElementById('lblStatus');
 
   m_db.entryHint
@@ -32,7 +67,7 @@ function clickUpdateHint(){
     });
  }
 
-function clickUpdateAnswer(){
+function clickSubmit(){
   const valueNo = document.getElementById('inputNo').value;
   const valueAnswer = document.getElementById('answer').value;
   const eStatus = document.getElementById('lblStatus');
@@ -48,8 +83,8 @@ function clickUpdateAnswer(){
       console.error(error);
       eStatus.textContent = 'STATUS : ERROR! EntryHint Update => '+ error;
     });
+  textareaUpdate();
 }
-
 
 function clickUpdateCheck(){
   const valueNo = document.getElementById('inputNo').value;
@@ -78,21 +113,31 @@ function textareaUpdate(){
   const eAnswer = document.getElementById('answer');
   const eCheckHint1 = document.getElementById('checkHint1');
   const eHint1 = document.getElementById('hint1');
-  const eCheckHint2 = document.getElementById('checkHint2');
-  const eHint2 = document.getElementById('hint2');
+  //const eCheckHint2 = document.getElementById('checkHint2');
+  //const eHint2 = document.getElementById('hint2');
   const eCheckCurrentEn = document.getElementById('checkCurrentEn');
   const eCheckCurrentJp = document.getElementById('checkCurrentJp');
   const eCurrentEn = document.getElementById('currentEn');
   const eCurrentJp = document.getElementById('currentJp');
   const valueNo = document.getElementById('inputNo').value;
+  const eCheckAnswerHistory = document.getElementById('checkAnswerHistory');
+  let ePastEntry = document.getElementById('pastEntry');
   let currentData;
-  
+
   if(eCheckAnswer.checked){eAnswer.style.display = 'block';
   }else{                   eAnswer.style.display = 'none';}
+  if(eCheckAnswerHistory.checked){
+    ePastEntry.style.display = 'block';
+  }else{
+    ePastEntry.style.display = 'none';
+  }
+
   if(eCheckHint1.checked){eHint1.style.display = 'block';
   }else{                 eHint1.style.display = 'none';}
-  if(eCheckHint2.checked){eHint2.style.display = 'block';
-  }else{                 eHint2.style.display = 'none';}
+
+  //if(eCheckHint2.checked){eHint2.style.display = 'block';
+  //}else{                 eHint2.style.display = 'none';}
+
   if(eCheckCurrentEn.checked){
     eCurrentEn.style.display = 'block';
     currentData = getCurrentData();
@@ -119,14 +164,27 @@ function textareaUpdate(){
   m_db.entryHint.get(valueNo).then(row => {
     if(row){
       eHint1.value = row.hint1;
-      eHint2.value = row.hint2;
+      //eHint2.value = '';
     }else{
       eHint1.value = '';
-      eHint2.value = '';
+      //eHint2.value = '';
     }
   });
-}
+  
+  ePastEntry.innerHTML = ""; //オプションの初期化
+  m_db.entryAnswer.where("code").equals(valueNo).reverse().toArray().then(answers=> {
+    answers.forEach((row) => {
+      let option = document.createElement("option");
+      const ymd = row.date.split(" ")[0].split("/");
 
+      option.value = row.id;
+      option.text = ymd[1]+"."+ymd[2]+":"+row.answer;
+      ePastEntry.appendChild(option);
+    }); 
+  }).catch(error => {
+    console.error("データの取得に失敗しました:", error);
+  });
+}
 function checkUpdate(){
   const eCheckContainer = document.getElementById('check-container');
   const eCheckSwitch = document.getElementById('checkSwitch');
@@ -155,23 +213,6 @@ function checkUpdate(){
   });
 }
 
-window.onload = function(){
-  const requestURL = './contents.json';
-  let request = new XMLHttpRequest();
-  const eStatus = document.getElementById('lblStatus');
-
-  eStatus.textContent = 'STATUS : sentents file loading..';
-  request.open('GET', requestURL);
-  request.responseType = 'json';
-  request.send();
-
-  request.onload = function (){
-    m_json.setData(request.response);
-    textareaUpdate();
-    checkUpdate();
-    eStatus.textContent = 'status : Running...';
-  }
-}
 
 function clickPlay(){
   const eStatus = document.getElementById('lblStatus');
@@ -201,7 +242,6 @@ function clickPlay(){
     }
   });
 }
-
 function resetLoopCheck(){
   let eLoop = document.getElementById('inputLoop');
   eLoop.checked=false
@@ -234,3 +274,16 @@ function clickSpeedDown(){
     eSpeed.value = (Number(eSpeed.value) - 0.1).toFixed(1); 
   }
 }
+function clickDeleteUp(){
+  let eId = document.getElementById('inputDeleteId');
+  if (!isNaN(eId.value)) {
+    eId.value = Number(eId.value) + 1; 
+  }
+}
+function clickDeleteDown(){
+  let eId = document.getElementById('inputDeleteId');
+  if (!isNaN(eId.value)) {
+    eId.value = Number(eId.value) - 1; 
+  }
+}
+

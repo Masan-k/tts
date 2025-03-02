@@ -56,45 +56,51 @@
   <div id='container'>
     <div id='main-navi'>
       <fieldset>
-        <button accesskey="p" onclick="clickPlay()"> play </button>
+        <button onclick="clickPlay()"> play </button>
         <label><input id="inputLoop" type="checkbox" id="checkLoop"> loop</label>
 
         <fieldset style='display:inline-block;'>
           <legend>no</legend>
-          <button  class='button-updown' accesskey="k" onclick="clickDown()">▼</button>
-          <input type="text" id="inputNo" style="width:30px" placeholder="NO" value=1 />
-          <button  class='button-updown' accesskey="j" onclick="clickUp()">▲</button>
+          <input type="text" id="inputNo" style="width:30px" placeholder="No" value=1 />
+          <button  class='button-updown' onclick="clickDown()">▼</button>
+          <button  class='button-updown' onclick="clickUp()">▲</button>
         </fieldset>
         <fieldset style='display:inline-block;'>
 
           <legend>speed</legend>
-          <button class='button-updown' onclick="clickSpeedDown()">▼</button>
           <input type="text" id="inputSpeed" style="width:30px" value=1.0 />
+          <button class='button-updown' onclick="clickSpeedDown()">▼</button>
           <button class='button-updown' onclick="clickSpeedUp()">▲</button>
         </fieldset>
       </fieldset>
     </div>
 
     <div id='message-container'>
-     <label><input type="checkbox" id="checkCurrentEn" accesskey="c" checked="checked" onclick="textareaUpdate() "> current-en</label>
-      <textarea id="currentEn" class="primary-textarea" rows="3"></textarea>
-      <label><input type="checkbox" id="checkCurrentJp" accesskey="c" checked="checked" onclick="textareaUpdate()"> current-jp</label>
-      <textarea id="currentJp" class="primary-textarea" rows="3"></textarea>
-
+      <!-- current -->
       <fieldset>
-        <label><input type="checkbox" id="checkHint1" accesskey="m" onclick="textareaUpdate()">hint1</label>
-        <button accesskey="s" onclick="clickUpdateHint()"> update </button>
-        <textarea id="hint1" class="primary-textarea" rows="5" placeholder="Enter hint1"></textarea><br>
-        <label><input type="checkbox" id="checkHint2" accesskey="n" onclick="textareaUpdate()">hint2</label>
-        <textarea id="hint2" class="primary-textarea" rows="5" placeholder="Enter hint2"></textarea>
+        <label><input type="checkbox" id="checkCurrentJp" accesskey="j" checked="checked" onclick="textareaUpdate()"> current-jp(j)</label>
+        <textarea id="currentJp" class="primary-textarea" rows="3"></textarea>
+        <label><input type="checkbox" id="checkCurrentEn" accesskey="e" onclick="textareaUpdate() "> current-en(e)</label>
+        <textarea id="currentEn" class="primary-textarea" rows="3"></textarea>
       </fieldset>
 
+      <!-- answer -->
       <fieldset>
-        <label><input type="checkbox" id="checkAnswer" accesskey="a" onclick="textareaUpdate()"> answer</label>
-        <button accesskey="s" onclick="clickUpdateAnswer()"> update </button>
-        <textarea id="answer" class="primary-textarea" rows="3" placeholder="Enter answer"></textarea>
+        <label><input type="checkbox" id="checkAnswer" checked="checked" onclick="textareaUpdate()"> answer</label>
+        <button accesskey="s" onclick="clickSubmit()">submit(enter)</button>
+        <input type="text" id="inputDeleteId" style="width:30px" value=1 />
+        <button  class='button-updown' onclick="clickDeleteDown()">▼</button>
+        <button  class='button-updown' onclick="clickDeleteUp()">▲</button>
+
+        <textarea id="answer" class="primary-textarea" rows="3" placeholder="Enter answers"></textarea>
+        <label><input type="checkbox" id="checkAnswerHistory" accesskey="p" onclick="textareaUpdate()">past answers(p)</label>
+        <button accesskey="c" onclick="clickDeletePostAnswer()"> delete </button>
+        <select id="pastEntry" name="pastEntry" class="primary-textarea" size="5">
+        </select>
       </fieldset>
 
+
+      <!-- check -->
       <fieldset>
         <label><input type="checkbox" id="checkSwitch" accesskey="a" onclick="checkUpdate()"> check</label>
         <div id=check-container>
@@ -104,6 +110,17 @@
           <button accesskey="c" onclick="clickUpdateCheck()"> update </button><br>
         </div>
       </fieldset>
+
+      <fieldset>
+        <label><input type="checkbox" id="checkHint1" accesskey="m" onclick="textareaUpdate()">memo</label>
+        <button accesskey="s" onclick="clickUpdateHint()"> update </button>
+        <textarea id="hint1" class="primary-textarea" rows="5" placeholder="Enter hint1"></textarea><br>
+        <!--
+        <label><input type="checkbox" id="checkHint2" accesskey="n" onclick="textareaUpdate()">hint2</label>
+        <textarea id="hint2" class="primary-textarea" rows="5" placeholder="Enter hint2"></textarea>
+        -->
+      </fieldset>
+
  
    </div>
     <a id="lblStatus">dummyStatus</a>

@@ -1,4 +1,3 @@
-*.wav
-*.swp
-work/
+www/voice/*.wav
+www/contents-duo.txt
 
